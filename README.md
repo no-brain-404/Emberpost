@@ -1,5 +1,13 @@
 # EmberPost
 
+> [!WARNING]
+> **Known Unreal Azeroth client issues**
+>
+> 1. **Bulk collection can stop early.** Unreal Azeroth's mailbox can stop responding after the addon collects a few messages. The client also sometimes reports `MAIL_FAILED` after a successful mailbox action. EmberPost verifies every action and stops when it cannot safely confirm what happened, which prevents duplicate requests but cannot fully work around the client bug. This should improve when Unreal Azeroth's mailbox implementation is fixed.
+> 2. **YOU CANNOT SEND MONEY.** The client currently attempts to attach your entire balance instead of the amount you entered. EmberPost checks the result and cancels the request before sending, but money sending must be treated as unavailable until the client-side bug is fixed. Item-only mail is unaffected.
+
+Found another problem? Please [open a GitHub issue](https://github.com/no-brain-404/Emberpost/issues) or report it in the Emberveil Discord. Include your EmberPost version, what you were doing, a screenshot, and the output from `/emberpost debug` whenever possible. Clear reports make these client-specific problems much easier to reproduce and fix.
+
 EmberPost is a compact mailbox addon built specifically for **Emberveil's Unreal Azeroth client**. It replaces the default mailbox with a faster, cleaner interface for collecting and sending large amounts of mail.
 
 It is a standalone addon and does not require Postal, TradeSkillMaster, Ace, or any other addon library.
