@@ -5,6 +5,7 @@ function E:AddAttachment(bag, slot, fromCursor)
     if type(bag) ~= "number" or bag < 0 or bag > 4 then self:SetStatus("Only items carried in your bags can be queued.", true); return false end
     if self:Reserved(bag, slot) then self:SetStatus("That stack is already queued."); return false end
     if #self.attachments >= self.maxAttachments then self:SetStatus("The queue holds at most 21 stacks.", true); return false end
+    if self.cod and #self.attachments >= 1 then self:SetStatus("COD supports one stack per send. Remove the queued stack first.", true); return false end
     local item = self:BagItem(bag, slot)
     if not item then self:SetStatus("That bag slot is empty or not cached.", true); return false end
     if item.locked and not fromCursor then self:SetStatus("That stack is locked. Try again shortly.", true); return false end
@@ -47,6 +48,7 @@ function E:ValidateDraft(draft)
     if #draft.body > 5000 then return nil, "Letter text is limited to 5000 bytes." end
     if not draft.amount or draft.amount < 0 or draft.amount > 2000000000 or draft.amount ~= math.floor(draft.amount) then return nil, "Invalid money amount." end
     if draft.cod and (#self.attachments == 0 or draft.amount == 0) then return nil, "COD needs an attached stack and a positive amount." end
+    if draft.cod and #self.attachments > 1 then return nil, "COD supports one stack per send. Remove the other queued stacks." end
     local total = math.max(1, #self.attachments)
     local cost = GetSendMailPrice() * total + (not draft.cod and draft.amount or 0)
     if cost > GetMoney() then return nil, "Not enough money for all postage and enclosed coins." end
@@ -66,7 +68,7 @@ function E:StartSend(draft)
     for i, item in ipairs(self.attachments) do queue[i] = item end
     local text = string.format("Send %d letter(s) to %s?\nSubject: %s\nPostage: %s", total, self.Display(draft.to), self.Display(draft.subject), self.Money(GetSendMailPrice() * total))
     if draft.amount > 0 then
-        text = text .. "\n" .. (draft.cod and "COD charged on the FIRST letter only: " or "Coins enclosed in the FIRST letter only: ") .. self.Money(draft.amount)
+        text = text .. "\n" .. (draft.cod and "COD charged on this letter: " or "Coins enclosed in the FIRST letter only: ") .. self.Money(draft.amount)
     end
     text = text .. "\nItems and coins sent cannot be recalled."
     self:Confirm("Review outgoing mail", text, function()

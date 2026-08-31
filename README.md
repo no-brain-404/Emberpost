@@ -6,6 +6,9 @@
 > 1. **Bulk collection can stop early.** Unreal Azeroth's mailbox can stop responding after the addon collects a few messages. The client also sometimes reports `MAIL_FAILED` after a successful mailbox action. EmberPost verifies every action and stops when it cannot safely confirm what happened, which prevents duplicate requests but cannot fully work around the client bug. This should improve when Unreal Azeroth's mailbox implementation is fixed.
 > 2. **YOU CANNOT SEND MONEY.** The client currently attempts to attach your entire balance instead of the amount you entered. EmberPost checks the result and cancels the request before sending, but money sending must be treated as unavailable until the client-side bug is fixed. Item-only mail is unaffected.
 
+> [!IMPORTANT]
+> **COD is limited to one queued stack per send.** Unreal Azeroth sends every queued stack as a separate letter, so applying COD only to the first could let a recipient collect the remaining items for free. EmberPost 1.0.16 blocks multi-item COD completely. Send each COD stack separately and review its price before confirming.
+
 Found another problem? Please [open a GitHub issue](https://github.com/no-brain-404/Emberpost/issues) or report it in the Emberveil Discord. Include your EmberPost version, what you were doing, a screenshot, and the output from `/emberpost debug` whenever possible. Clear reports make these client-specific problems much easier to reproduce and fix.
 
 EmberPost is a compact mailbox addon built specifically for **Emberveil's Unreal Azeroth client**. It replaces the default mailbox with a faster, cleaner interface for collecting and sending large amounts of mail.
@@ -19,7 +22,8 @@ It is a standalone addon and does not require Postal, TradeSkillMaster, Ace, or 
 - Open All for non-COD items and coins
 - Optional deletion of empty letters
 - Selection and collection across multiple inbox pages
-- Up to 21 queued item stacks, sent as separate letters
+- Up to 21 queued non-COD item stacks, sent as separate letters
+- Single-stack COD with a hard block against unsafe multi-item COD
 - Automatic subjects based on the first attached item
 - Attachment icons, stack counts, quality borders, and native tooltips
 - Recent-recipient list and a fallback bag-item picker
@@ -44,12 +48,14 @@ To collect specific messages, select them in the inbox and choose **Collect sele
 
 On the Send tab, add item stacks by right-clicking or dragging them from your bags. EmberPost sends one stack per letter and numbers multipart subjects automatically.
 
+COD is intentionally restricted to one queued stack. If more than one stack is queued, EmberPost refuses to enable or send COD. This prevents later letters from being delivered without a charge. Send and price each COD stack separately.
+
 ## Commands
 
 | Command | Description |
 | --- | --- |
 | `/emberpost` | Show EmberPost during a mailbox visit |
-| `/emberpost help` | Show the available commands |
+| `/emberpost help` | Print the available commands in chat |
 | `/emberpost debug` | Print recent mail events for troubleshooting |
 | `/emberpost stop` | Stop the current queue |
 | `/emberpost native` | Switch to the original mailbox for the current visit |

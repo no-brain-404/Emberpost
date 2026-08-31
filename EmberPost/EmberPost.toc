@@ -2,7 +2,7 @@
 ## Title: EmberPost
 ## Notes: Mail for Emberveil / Unreal Azeroth. Bulk collect, 21-stack sending, and a modern mailbox.
 ## Author: EmberPost contributors
-## Version: 1.0.15
+## Version: 1.0.16
 ## SavedVariables: EmberPostDB
 Core.lua
 Inbox.lua

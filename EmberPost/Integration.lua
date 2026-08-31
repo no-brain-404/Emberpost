@@ -274,6 +274,9 @@ end
 function E:Slash(command)
     local verb, value = self.Trim(command):match("^(%S*)%s*(.-)$")
     verb = string.lower(verb or "")
+    local function chat(message)
+        if DEFAULT_CHAT_FRAME then DEFAULT_CHAT_FRAME:AddMessage("EmberPost: " .. message, 1, 0.82, 0.22) end
+    end
     if verb == "stop" then
         if self.job then self:Stop("Stopped by you. Completed actions cannot be undone.") end
     elseif verb == "native" then self:NativeMailbox()
@@ -283,20 +286,23 @@ function E:Slash(command)
             for _, line in ipairs(self.mailTrace or {}) do DEFAULT_CHAT_FRAME:AddMessage(line) end
         end
     elseif verb == "help" then
-        self:SetStatus("Visit a mailbox to collect or compose. /emberpost reset (compact) | scale " .. self.minScale .. "-" .. self.maxScale .. " | stop | native | debug | help", true)
+        chat("Commands:")
+        chat("/emberpost - show EmberPost at an open mailbox")
+        chat("/emberpost reset | scale " .. self.minScale .. "-" .. self.maxScale)
+        chat("/emberpost stop | native | debug | help")
     elseif verb == "reset" or verb == "scale" then
         self:Initialize()
         if verb == "reset" then self.settings.position = nil; self.settings.scale = self.defaultScale; self:RestorePosition(true)
         else
             local scale = tonumber(value)
-            if not scale or scale < self.minScale or scale > self.maxScale then self:SetStatus("Use /emberpost scale " .. self.minScale .. " through " .. self.maxScale, true); return end
+            if not scale or scale < self.minScale or scale > self.maxScale then chat("Use /emberpost scale " .. self.minScale .. " through " .. self.maxScale); return end
             self.settings.scale = scale; self:RestorePosition()
         end
-        self:SetStatus("Window layout updated.", true)
+        chat("Window layout updated.")
     elseif self.open then
         self.nativeMode, self.nativeHidePending = false, true
         self.ui.frame:Show(); self:SetEscapeEnabled(true); self.dirty = true
-    else self:SetStatus("Visit a mailbox first. Use /emberpost help for commands.", true) end
+    else chat("Visit a mailbox first. Use /emberpost help for commands.") end
 end
 
 SLASH_EMBERPOST1, SLASH_EMBERPOST2 = "/emberpost", "/epost"

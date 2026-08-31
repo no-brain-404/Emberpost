@@ -1,5 +1,5 @@
 -- Fresh Lua 5.1 implementation for Emberveil. No Ace or Blizzard templates.
-EmberPost = { version = "1.0.15", maxAttachments = 21, timeout = 15, interval = 0.35,
+EmberPost = { version = "1.0.16", maxAttachments = 21, timeout = 15, interval = 0.35,
     sendInterval = 0.08, sendPause = 0.10, collectInterval = 0.08, collectPause = 0.15,
     collectSettle = 0.60, collectFailureGrace = 5.0, collectBackoff = 0.50,
     collectMaxPause = 0.75, collectRetryLimit = 1,

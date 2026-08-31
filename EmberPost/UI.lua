@@ -400,7 +400,14 @@ function E:BuildSend(p)
         E:Confirm("Clear draft?", "Discard the queued stacks and letter text?\nYour bag items are not deleted.", function() E:ClearComposer(); E:SetStatus("Draft cleared.") end)
     end)
     ui.postage = text(p, 264, 344, 356, 30, "", 12, C.muted, "RIGHT")
-    ui.cod = button(p, 0, 282, 120, 28, "[ ] COD", function() if not E:Busy() then E.cod = not E.cod; E.dirty = true end end)
+    ui.cod = button(p, 0, 282, 120, 28, "[ ] COD", function()
+        if E:Busy() then return end
+        if not E.cod and #E.attachments > 1 then
+            E:SetStatus("COD supports one stack per send. Remove the other queued stacks.", true)
+            return
+        end
+        E.cod = not E.cod; E.dirty = true
+    end)
     text(p, 140, 282, 40, 28, "Gold", 11, C.gold)
     ui.gold = edit(p, 188, 282, 112, 28, 6)
     text(p, 320, 282, 44, 28, "Silver", 11, C.muted)
@@ -409,7 +416,7 @@ function E:BuildSend(p)
     ui.copper = edit(p, 532, 282, 88, 28, 2)
     ui.gold:SetTextInsets(4, 4, 5, 5)
     ui.silver:SetTextInsets(3, 3, 5, 5); ui.copper:SetTextInsets(3, 3, 5, 5)
-    ui.moneyNote = text(p, 0, 314, 620, 20, "Coins / COD apply to the FIRST letter only. Amounts are verified before sending.", 11, C.muted)
+    ui.moneyNote = text(p, 0, 314, 620, 20, "COD: one stack per send. Coins apply to the first letter only.", 11, C.muted)
     ui.addItems = button(p, 0, 344, 120, 30, "Add items", function() if not E:Busy() then E.bagOpen = not E.bagOpen; E.dirty = true end end)
     local inputs = { ui.to, ui.subject, ui.body, ui.gold, ui.silver, ui.copper }
     for i, box in ipairs(inputs) do
