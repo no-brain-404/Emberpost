@@ -1,4 +1,4 @@
-# EmberPost 1.0.17
+# EmberPost 1.0.18
 
 Install this entire `EmberPost` folder in the Unreal Azeroth client's `Interface/AddOns` directory.
 

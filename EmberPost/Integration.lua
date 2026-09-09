@@ -96,7 +96,23 @@ function E:HideNative()
         end)
     end
     self.hidingNative = true
-    frame:Hide()
+    -- MailFrame is a managed UIPanel. Calling Frame:Hide() directly leaves it
+    -- in UIParent.left/center on the 1.12 FrameXML panel stack. The global
+    -- Escape handler then consumes each press trying to close that panel.
+    -- HideUIPanel clears the panel slot while our wrapper suppresses only the
+    -- native OnHide callback that would otherwise close the mailbox session.
+    local hidePanel = _G.HideUIPanel
+    if type(hidePanel) == "function" then
+        hidePanel(frame)
+    else
+        -- Defensive fallback for clients without the FrameXML helper.
+        if UIParent then
+            for _, slot in ipairs({"left", "center", "doublewide", "fullscreen"}) do
+                if UIParent[slot] == frame then UIParent[slot] = nil end
+            end
+        end
+        frame:Hide()
+    end
     self.hidingNative = false
 end
 
