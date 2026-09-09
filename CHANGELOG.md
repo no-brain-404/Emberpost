@@ -4,10 +4,9 @@ All notable public changes to EmberPost are documented here.
 
 ## [1.0.18] - 2026-09-09
 
-### Fixed
+### Hotfix
 
-- Fixed the remaining cause of Escape failing to open the game menu after a mailbox visit.
-- The native `MailFrame` is now hidden through Blizzard's UI panel manager. The earlier direct hide left an invisible mailbox assigned to `UIParent.left`, causing the game to consume every Escape press while trying to close that stale panel.
+- Fixed Escape not opening the game menu after a mailbox visit. EmberPost now removes the hidden native mailbox from Blizzard's UI panel stack instead of leaving it assigned as an invisible open panel.
 - Added a regression test covering the native mailbox panel slot during EmberPost takeover and close.
 
 ## [1.0.17] - 2026-09-09
