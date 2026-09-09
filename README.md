@@ -4,7 +4,7 @@
 > **Known Unreal Azeroth client issues**
 >
 > 1. **Bulk collection can stop early.** Unreal Azeroth's mailbox can stop responding after the addon collects a few messages. The client also sometimes reports `MAIL_FAILED` after a successful mailbox action. EmberPost verifies every action and stops when it cannot safely confirm what happened, which prevents duplicate requests but cannot fully work around the client bug. This should improve when Unreal Azeroth's mailbox implementation is fixed.
-> 2. **YOU CANNOT SEND MONEY.** The client currently attempts to attach your entire balance instead of the amount you entered. EmberPost checks the result and cancels the request before sending, but money sending must be treated as unavailable until the client-side bug is fixed. Item-only mail is unaffected.
+> 2. **Sending money requires Unreal Azeroth client patch 2333 or newer.** Older clients may attach your entire balance instead of the amount entered. EmberPost verifies the exact amount before sending and cancels the letter if the client reports a mismatch. After any client update, test with a very small amount first.
 
 > [!IMPORTANT]
 > **COD is limited to one queued stack per send.** Unreal Azeroth sends every queued stack as a separate letter, so applying COD only to the first could let a recipient collect the remaining items for free. EmberPost 1.0.16 blocks multi-item COD completely. Send each COD stack separately and review its price before confirming.
@@ -24,6 +24,7 @@ It is a standalone addon and does not require Postal, TradeSkillMaster, Ace, or 
 - Selection and collection across multiple inbox pages
 - Up to 21 queued non-COD item stacks, sent as separate letters
 - Single-stack COD with a hard block against unsafe multi-item COD
+- Exact outgoing coin verification on client patch 2333 and newer
 - Automatic subjects based on the first attached item
 - Attachment icons, stack counts, quality borders, and native tooltips
 - Recent-recipient list and a fallback bag-item picker
@@ -69,6 +70,8 @@ COD is intentionally restricted to one queued stack. If more than one stack is q
 EmberPost targets the WoW 1.12.1 / Lua 5.1 API exposed by Emberveil's Unreal Azeroth client. It is not intended for official Classic Era, Retail, or other private-server clients.
 
 Test with inexpensive mail first after a client update. Mailbox behavior ultimately depends on the client and server.
+
+EmberPost does not claim the Escape key. Close its mailbox with the red **X**; Escape remains available to the game menu.
 
 ## Releases and versioning
 

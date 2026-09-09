@@ -179,15 +179,13 @@ function E:RestorePosition(reset)
     else f:SetPoint("CENTER", UIParent, "CENTER", 0, 0) end
 end
 
-function E:SetEscapeEnabled(active)
+function E:ClearEscapeRegistration()
     if type(UISpecialFrames) ~= "table" then return end
-    local found = false
     for i = #UISpecialFrames, 1, -1 do
         if UISpecialFrames[i] == "EmberPostFrame" then
-            if not active or found then table.remove(UISpecialFrames, i) else found = true end
+            table.remove(UISpecialFrames, i)
         end
     end
-    if active and not found then table.insert(UISpecialFrames, "EmberPostFrame") end
 end
 
 function E:SetInputState(active)
@@ -237,9 +235,10 @@ function E:BuildUI()
     ui.stop = button(f, 556, 477, 74, 24, "Stop", function() E:Stop("Stopped by you. Completed actions cannot be undone.") end)
     ui.footer = text(f, 10, 502, 620, 14, "/emberpost debug     /emberpost help", 10, C.muted, "CENTER")
     f:SetScript("OnHide", function() if E.open and not E.hidingOwn then E:CloseMailbox() end end)
-    -- Some client Escape handlers consume registered frames even while hidden.
-    -- Register only during an EmberPost mailbox visit, never for the whole login.
-    self:SetEscapeEnabled(false)
+    -- EmberPost deliberately never owns Escape. Unreal Azeroth may consume the
+    -- key for a hidden UISpecialFrames entry, preventing the game menu opening.
+    -- Purge stale registrations left by EmberPost versions before 1.0.17.
+    self:ClearEscapeRegistration()
     self.scanOwner = CreateFrame("Frame", "EmberPostScanOwner", UIParent); self.scanOwner:Hide()
     self.scanTooltip = CreateFrame("GameTooltip", "EmberPostScanTooltip", self.scanOwner)
     self.scanTooltip:Hide()

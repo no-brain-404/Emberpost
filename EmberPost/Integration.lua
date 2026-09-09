@@ -112,7 +112,7 @@ function E:OpenMailbox()
     self.inbox = self:Snapshot() or {}
     self.nativeHidePending, self.nextPoll, self.dirty = true, 0, true
     self.ui.frame:Show()
-    self:SetEscapeEnabled(true)
+    self:ClearEscapeRegistration()
     self:SetStatus("Mailbox ready. Bulk collection skips COD; letter deletion is optional.")
     if self.sendUncertain or self.inboxUncertain then self:CanAct() end
     CheckInbox()
@@ -124,7 +124,7 @@ function E:EndSession()
     self.open, self.nativeMode, self.nativeHidePending = false, false, nil
     self.confirmAction, self.cursorOrigin, self.readerIndex = nil, nil, nil
     self.ownsDraft = false -- CloseMail / MAIL_CLOSED owns native draft cleanup
-    self:SetEscapeEnabled(false)
+    self:ClearEscapeRegistration()
     self:SetInputState(false)
     self.ui.modal:Hide()
     self.hidingOwn = true; self.ui.frame:Hide(); self.hidingOwn = false
@@ -148,7 +148,7 @@ function E:NativeMailbox()
     self.confirmAction = nil; self.ui.modal:Hide()
     self:ClearComposer()
     self.nativeMode, self.nativeHidePending = true, nil
-    self:SetEscapeEnabled(false)
+    self:ClearEscapeRegistration()
     self:SetInputState(false)
     self.hidingOwn = true; self.ui.frame:Hide(); self.hidingOwn = false
     MailFrame:Show()
@@ -301,7 +301,7 @@ function E:Slash(command)
         chat("Window layout updated.")
     elseif self.open then
         self.nativeMode, self.nativeHidePending = false, true
-        self.ui.frame:Show(); self:SetEscapeEnabled(true); self.dirty = true
+        self.ui.frame:Show(); self:ClearEscapeRegistration(); self.dirty = true
     else chat("Visit a mailbox first. Use /emberpost help for commands.") end
 end
 

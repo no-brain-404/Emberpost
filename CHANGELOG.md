@@ -2,6 +2,20 @@
 
 All notable public changes to EmberPost are documented here.
 
+## [1.0.17] - 2026-09-09
+
+### Fixed
+
+- Stopped registering the EmberPost window in `UISpecialFrames`, which could make Unreal Azeroth consume Escape after a mailbox visit and prevent the game menu from opening.
+- Added cleanup for stale and duplicate `EmberPostFrame` registrations left by an older addon version in the current UI session.
+- Kept keyboard focus cleanup for every hidden mailbox input. EmberPost now closes through its red **X**, leaving Escape to the game.
+
+### Compatibility
+
+- Confirmed that EmberPost already accepts the four-argument `OnCursorChanged(CursorX, CursorY, CursorW, CursorH)` callback added in client patch 2333; no cursor code change was required.
+- Updated the money warning for patch 2333. EmberPost still checks the exact outgoing coin and COD values immediately before every send, so an older or faulty client cannot silently attach the wrong amount.
+- Reviewed all 13 newly announced Lua globals. EmberPost does not depend on them, so no new API calls were added.
+
 ## [1.0.16] - 2026-08-31
 
 ### Security
@@ -39,3 +53,4 @@ All notable public changes to EmberPost are documented here.
 
 [1.0.15]: https://github.com/no-brain-404/Emberpost/releases/tag/v1.0.15
 [1.0.16]: https://github.com/no-brain-404/Emberpost/releases/tag/v1.0.16
+[1.0.17]: https://github.com/no-brain-404/Emberpost/releases/tag/v1.0.17
